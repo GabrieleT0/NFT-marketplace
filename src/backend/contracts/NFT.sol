@@ -11,6 +11,15 @@ contract NFT is ERC721URIStorage{
     //nome e simbolo dell'NFT
     constructor() ERC721("Dapp NFT","DAPP"){}
 
+    //mint produrrà nuovi NFT
     //tokenURI sono i metadati dell'NFT, cioè è il link al contenuto dell'nft che si trova in IPFS
-    function mint(string _tokenURI)
+    function mint(string memory _tokenURI) external returns(uint){
+        tokenCount++;
+        //producto l'nft chiamando la funzione ereditata da erc721
+        _safeMint(msg.sender, tokenCount);
+        //setta i metadata per il nuovo NFT creato
+        _setTokenURI(tokenCount, _tokenURI);
+        //retiruiamo l'id del nuovo NFT creato
+        return(tokenCount);
+    }
 }
