@@ -12,22 +12,26 @@ contract ("Marketplace",(accounts) => {
     let nft 
     let marketplace 
     const FEE_PERCENT = new BN('1')
-    let feePercent = 1
     let URI = "Sample URI"
     let MARKETPLACE_ITEM = new BN('1')
     let ITEM_ID = new BN('1')
     let TOKEN_ID = new BN('1')
     let priceBN = new BN('1')
     let price = '1'
+    //user that deply the marketplace smart contracts
+    let marketplace_deployer = accounts[0]
+    //is the minter of nft and the seller
+    let nft_creator = accounts[1]
+
 
     before(async() => {
-        marketplace = await Marketplace.deployed(1,{from: accounts[0]});
+        marketplace = await Marketplace.deployed(1,{from: marketplace_deployer});
         nft = await Nft.deployed();
     });
 
     describe("Deployment", async () => {
         it("Should track feeAccount and feePercent of the marketplace", async function(){
-            expect(await marketplace.feeAccount()).to.be.equal(accounts[0]);
+            expect(await marketplace.feeAccount()).to.be.equal(marketplace_deployer);
             expect(await marketplace.feePercent()).to.be.bignumber.equal(FEE_PERCENT)
         });
     });
@@ -35,16 +39,16 @@ contract ("Marketplace",(accounts) => {
     describe("Making marketplace items", function(){
         beforeEach(async function(){
             //addr1 mints an nft
-            await nft.mint(URI,{from: accounts[1]})
+            await nft.mint(URI,{from: nft_creator})
             //addr1 approves marketplace to spend nft
             //abbiamo bisogno della funzione di approvazione, poichè per far si che la funzione transferFrom funzioni, chi chiama la funziona ha bisogno di avere l'approvazione dallo smart contract Marketplace per trasferire il suo NFT al marketplace
-            await nft.setApprovalForAll(marketplace.address, true, {from: accounts[1]})
+            await nft.setApprovalForAll(marketplace.address, true, {from: nft_creator})
         });
         it("Should track newly created item, transfer NFT from seller to marketplace and emit Offered event", async function(){
             //addr1 offers their nft at a price of 1 ether
             //passiamo wei invece di ether poichè in solidity non si possono rappresentare i valori decimali, possiamo solo rappresentare interi. Quindi bisogna rappresentare gli ether negli smart contract con la più piccola suddivisione, cioè in wei.
-            const receipt = await marketplace.makeItem(nft.address,1,web3.utils.toWei(price), {from: accounts[1]})
-            expectEvent(receipt,"Offered",{itemId:ITEM_ID,nft: nft.address,tokenId:TOKEN_ID,price:web3.utils.toWei(price),seller:accounts[1]})
+            const receipt = await marketplace.makeItem(nft.address,1,web3.utils.toWei(price), {from: nft_creator})
+            expectEvent(receipt,"Offered",{itemId:ITEM_ID,nft: nft.address,tokenId:TOKEN_ID,price:web3.utils.toWei(price),seller:nft_creator})
             //Owner of NFT should now be the marketplace
             expect(await nft.ownerOf(1)).to.be.equal(marketplace.address);
             //Item count should now equal 1
