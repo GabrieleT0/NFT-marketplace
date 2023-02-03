@@ -30,6 +30,15 @@ contract Marketplace is ReentrancyGuard{
         address indexed seller
     );
 
+    event Bought (
+        uint itemId,
+        address indexed nft,
+        uint tokenId,
+        uint price,
+        address indexed seller,
+        address indexed buyer
+    );
+
     // itemId (key) -> Item (value)
     mapping(uint => Item) public items;
 
@@ -61,5 +70,37 @@ contract Marketplace is ReentrancyGuard{
             _price,
             msg.sender
         );
+    }
+    //gli utenti che chiamano questa funzinone, inviano ether e questi dovrebbero andare al venditore dell'item e una porzione al feeaccounts
+    function purchaseItem(uint _itemId) external payable nonReentrant{
+        uint _totalPrice = getTotalPrice(_itemId);
+        //storage ci assicura di prendere l'oggetto direttamente dalla struttura Item e non di farne una copia in memoria
+        Item storage item = items[_itemId];
+        require(_itemId > 0 && _itemId <= itemCount, "item doesn't exist");
+        require(msg.value >= _totalPrice, "not enought ether to conver item price and market fee");
+        require(!item.sold, "item already sold");
+        //pay seller and feeAccount
+        item.seller.transfer(item.price);
+        feeAccount.transfer(_totalPrice - item.price);
+        //update item to sold
+        item.sold = true;
+        //transfer nft to buyer
+        item.nft.transferFrom(address(this),msg.sender,item.tokenId);
+        //emit Bought event
+        emit Bought(
+            _itemId,
+            address(item.nft),
+            item.tokenId,
+            item.price,
+            item.seller,
+            msg.sender
+        );
+    }
+
+    //prezzo totale, che va a comprendere il prezzo dell'item più le fee
+    //è pubblica perchè abbiamo bisogno che sia chiamabile da purchaseItem e anche al di fuori del contratto perchè 
+    //chiunque voglia comprare un item, ha bisogno di sapere quanti ether deve inviare a purchaseItem() per comprare l'item, includendo prezzo dell'NFT e le fee.
+    function getTotalPrice(uint _itemId) view public returns(uint){
+        return (items[_itemId].price*(100 + feePercent)/100);
     }
 }   
