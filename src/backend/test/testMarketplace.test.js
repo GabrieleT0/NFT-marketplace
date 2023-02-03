@@ -1,5 +1,4 @@
 const { expect } = require('chai');
-const eventemitter2 = require('chai-eventemitter2');
 
 // Import utilities from Test Helpers
 const { BN, expectEvent, expectRevert, constants } = require('@openzeppelin/test-helpers');
