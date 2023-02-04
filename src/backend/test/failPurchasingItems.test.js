@@ -15,18 +15,18 @@ contract ("Marketplace",(accounts) => {
     let marketplace_deployer = accounts[0]
     let nft_creator = accounts[1]
     let nft_buyer = accounts[2]
+    let price = '3'
+    let totalPriceInWei;
 
-    before(async() => {
+    beforeEach(async() => {
         marketplace = await Marketplace.deployed(feePercent,{from: marketplace_deployer});
         nft = await Nft.deployed();
-    });
-
-    it("Should fail for invalid item ids, sold items and when ether is paid", async function(){
-        let price = '2'
-        let totalPriceInWei
         await nft.mint(URI,{from: nft_creator})
         await nft.setApprovalForAll(marketplace.address, true,{from: nft_creator})
         await marketplace.makeItem(nft.address,1,web3.utils.toWei(price),{from: nft_creator})
+    });
+
+    it("Should fail for invalid item ids, sold items and when ether is paid", async function(){
         //fails for invalid item ids
         await expectRevert(marketplace.purchaseItem(2,{from: nft_buyer, value: totalPriceInWei}),"item doesn't exist");
         await expectRevert(marketplace.purchaseItem(0,{from: nft_buyer, value:totalPriceInWei}),"item doesn't exist");
