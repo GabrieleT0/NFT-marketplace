@@ -20,18 +20,14 @@ contract ("Marketplace",(accounts) => {
     let price = '3'
     let totalPriceInWei
 
-    before(async() => {
+    beforeEach(async() => {
         marketplace = await Marketplace.deployed(feePercent,{from: marketplace_deployer});
-        nft = await Nft.deployed();
-    });
-
-
-    beforeEach(async function(){
+        nft = await Nft.new({from: nft_creator});
         await nft.mint(URI,{from: nft_creator})
         await nft.setApprovalForAll(marketplace.address, true,{from: nft_creator})
         await marketplace.makeItem(nft.address,1,web3.utils.toWei(price),{from: nft_creator})
     });
-    
+
     it("Should update item as sold, pay seller, transfer NFT to buyer, charge fees and emit Bought event", async function(){
         const sellerInitialEthBal = await web3.eth.getBalance(nft_creator)
         const feeAccountInitialEthBal = await web3.eth.getBalance(marketplace_deployer) 
@@ -52,5 +48,18 @@ contract ("Marketplace",(accounts) => {
         expect(await nft.ownerOf(1)).to.be.equal(nft_buyer);
         //Item should be marked as sold
         expect((await marketplace.items(1)).sold).to.be.equal(true)
+    });
+
+    it("Should fail for invalid item ids, sold items and when ether is paid", async function(){
+        //fails for invalid item ids
+        await expectRevert(marketplace.purchaseItem(3,{from: nft_buyer, value: totalPriceInWei}),"item doesn't exist");
+        await expectRevert(marketplace.purchaseItem(0,{from: nft_buyer, value:totalPriceInWei}),"item doesn't exist");
+        //fails when not enougt ether is paid with the transaction
+        await expectRevert(marketplace.purchaseItem(1,{from: nft_buyer, value: web3.utils.toWei(price)}),"not enough ether to cover item price and market fee");
+        //nft_buyer purchases item 2
+        totalPriceInWei = await marketplace.getTotalPrice(1);
+        expect(await marketplace.purchaseItem(2,{from: nft_buyer, value: totalPriceInWei}));
+        //marketplace_deployer tries purchasing item 1 after its been sold
+        await expectRevert(marketplace.purchaseItem(2,{from: marketplace_deployer, value: totalPriceInWei}),"item already sold");
     });
 });
