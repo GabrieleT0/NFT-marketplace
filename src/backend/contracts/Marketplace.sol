@@ -77,7 +77,7 @@ contract Marketplace is ReentrancyGuard{
         //storage ci assicura di prendere l'oggetto direttamente dalla struttura Item e non di farne una copia in memoria
         Item storage item = items[_itemId];
         require(_itemId > 0 && _itemId <= itemCount, "item doesn't exist");
-        require(msg.value >= _totalPrice, "not enought ether to conver item price and market fee");
+        require(msg.value >= _totalPrice, "not enough ether to cover item price and market fee");
         require(!item.sold, "item already sold");
         //pay seller and feeAccount
         item.seller.transfer(item.price);
@@ -101,6 +101,6 @@ contract Marketplace is ReentrancyGuard{
     //è pubblica perchè abbiamo bisogno che sia chiamabile da purchaseItem e anche al di fuori del contratto perchè 
     //chiunque voglia comprare un item, ha bisogno di sapere quanti ether deve inviare a purchaseItem() per comprare l'item, includendo prezzo dell'NFT e le fee.
     function getTotalPrice(uint _itemId) view public returns(uint){
-        return (items[_itemId].price*(100 + feePercent)/100);
+        return ((items[_itemId].price*(100 + feePercent))/100);
     }
 }   

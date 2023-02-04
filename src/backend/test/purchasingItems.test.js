@@ -19,12 +19,13 @@ contract ("Marketplace",(accounts) => {
     let nft_buyer = accounts[2]
 
     before(async() => {
-        marketplace = await Marketplace.deployed(1,{from: marketplace_deployer});
+        marketplace = await Marketplace.deployed(feePercent,{from: marketplace_deployer});
         nft = await Nft.deployed();
     });
 
     describe("Purchasing marketplace items", function(){
-        let price = '2'
+        let price = '3'
+        let totalPriceInWei
         beforeEach(async function(){
             await nft.mint(URI,{from: nft_creator})
             await nft.setApprovalForAll(marketplace.address, true,{from: nft_creator})
@@ -34,7 +35,7 @@ contract ("Marketplace",(accounts) => {
             const sellerInitialEthBal = await web3.eth.getBalance(nft_creator)
             const feeAccountInitialEthBal = await web3.eth.getBalance(marketplace_deployer) 
             // fetch items total price (market fees + item price)
-            let totalPriceInWei = await marketplace.getTotalPrice(1);
+            totalPriceInWei = await marketplace.getTotalPrice(1);
             //addr2 purchases item.
             const receipt = await marketplace.purchaseItem(1,{from: nft_buyer,value: totalPriceInWei})
             expectEvent(receipt,"Bought",{itemId:ITEM_ID,nft:nft.address,tokenId:TOKEN_ID,price:web3.utils.toWei(price),seller:nft_creator,buyer:nft_buyer})
@@ -45,11 +46,11 @@ contract ("Marketplace",(accounts) => {
             //Calculate fee
             const fee = (feePercent /100) * price
             //feeAccount should receive fee
-            expect(+web3.utils.fromWei(feeAccountFinalEthBal)).to.be.equal(+fee+ +web3.utils.fromWei(feeAccountInitialEthBal))
+            expect(+web3.utils.fromWei(feeAccountFinalEthBal)).to.be.equal(+fee + +web3.utils.fromWei(feeAccountInitialEthBal))
             //the buyer should now own the nft
             expect(await nft.ownerOf(1)).to.be.equal(nft_buyer);
             //Item should be marked as sold
             expect((await marketplace.items(1)).sold).to.be.equal(true)
         });
-    })
+    });
 });
