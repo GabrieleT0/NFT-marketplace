@@ -1,0 +1,7 @@
+{
+    "server": {
+      "baseDir": ["./src", "./build/contracts"]
+    },
+    "startPath": "/js/index.js"
+  }
+  
