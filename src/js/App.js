@@ -10,11 +10,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Marketplace from '../contractsData/Marketplace.json'
 import NFT from '../contractsData/NFT.json'
-import Home from './home'
+import Home from './Home'
 import Create from './create'
 import MyListedItems from './myListedItem'
 import MyPurchases from './myPurchases'
 import { Spinner } from 'react-bootstrap'
+
+import './App.css';
 
 function App(){
   const [loading, setLoading] = useState(true)
@@ -53,6 +55,7 @@ function App(){
           ) : (
             <Routes>
               <Route path="/" element={
+                //here passing the smart contract to the home component
                 <Home marketplace={marketplace} nft={nft} />
               } />
               <Route path="/create" element={
