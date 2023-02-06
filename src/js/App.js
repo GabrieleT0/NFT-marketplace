@@ -11,7 +11,7 @@ import axios from 'axios';
 import Marketplace from '../contractsData/Marketplace.json'
 import NFT from '../contractsData/NFT.json'
 import Home from './Home'
-import Create from './create'
+import Create from './Create'
 import MyListedItems from './myListedItem'
 import MyPurchases from './myPurchases'
 import { Spinner } from 'react-bootstrap'
@@ -23,6 +23,8 @@ function App(){
   const[account, setAccount] = useState(null)
   const [nft,setNFT] = useState(null)
   const [marketplace,setMarketplace] = useState({})
+  const[marketplaceAddr,setMarketplaceAddr] = useState({})
+  const[nftAddr, setNftAddr] = useState({})
   const web3Handler = async () => {
     //Get provider from Meramask
     const web3Modal = new Web3Modal()
@@ -36,10 +38,14 @@ function App(){
   }
   const loadContracts = async (web3,networkId) => {
       //Get deployed copies of contracts
+      const marketplaceAddr = Marketplace.networks[networkId].address
       const marketplace = new web3.eth.Contract(Marketplace.abi, Marketplace.networks[networkId].address)
       setMarketplace(marketplace)
+      setMarketplaceAddr(marketplaceAddr)
+      const nftAddr = NFT.networks[networkId].address
       const nft = new web3.eth.Contract(NFT.abi, NFT.networks[networkId].address)
       setNFT(nft)
+      setNftAddr(nftAddr)
       setLoading(false)
   }
   return (
@@ -56,10 +62,10 @@ function App(){
             <Routes>
               <Route path="/" element={
                 //here passing the smart contract to the home component
-                <Home marketplace={marketplace} nft={nft} />
+                <Home marketplace={marketplace} nft={nft} marketplaceAddr={marketplaceAddr} nftAddr={nftAddr} />
               } />
               <Route path="/create" element={
-                <Create marketplace={marketplace} nft={nft} />
+                <Create marketplace={marketplace} nft={nft} marketplaceAddr={marketplaceAddr} nftAddr={nftAddr} account={account}/>
               } />
               <Route path="/my-listed-items" element={
                 <MyListedItems marketplace={marketplace} nft={nft} account={account} />

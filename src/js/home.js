@@ -6,18 +6,19 @@ const Home = ({marketplace, nft}) => {
     const [items,setItems] = useState([])
     const [loading,setLoading] = useState(true)
     const loadMarketplaceItems = async () => {
-        const itemCount = await marketplace.itemCount
+        const itemCount = await marketplace.methods.itemCount().call()
         let items = []
         for(let i = 1; i<= itemCount;i++){
-            const item = await marketplace.items(i)
+            const item = await marketplace.methods.items(i).call()
             if(!item.sold){
                 //getting uri url from nft contract
-                const uri = await nft.tokenURI(item.tokenId)
+                const uri = await nft.methods.tokenURI(item.tokenId).call()
                 //use uri to fetch the nft metadata stored on ipfs
+                console.log(uri)
                 const response = await fetch(uri)
                 const metadata = await response.json()
                 //get total price of item (item price + fee)
-                const totalPrice = await marketplace.getTotalPrice(item.itemId)
+                const totalPrice = await marketplace.methods.getTotalPrice(item.itemId).call()
                 //add item to items array
                 items.push({
                     totalPrice,
@@ -34,7 +35,7 @@ const Home = ({marketplace, nft}) => {
     }
     const buyMarketItem = async (item) => {
         //this retun a transaction response, and with .wait() on the transaction response, we wait for the transaction be confermet
-        await (await marketplace.purchaseItem(item.itemId, {value: item.totalPrice})).wait()
+        await (await marketplace.methods.purchaseItem(item.itemId, {value: item.totalPrice}).call()).wait()
         //remove the recently purchased itemfrom the marketplace
         loadMarketplaceItems()
     }

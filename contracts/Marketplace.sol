@@ -46,12 +46,12 @@ contract Marketplace is ReentrancyGuard{
         feeAccount = payable(msg.sender);
         feePercent = _feePercent;
     }
-    //nonReentrant previene che utenti malintenzionait chiamino questa funzione e poi rientrino dinuovo dentro prima che la prima chiamata della funzione sia terminata.
+    //nonReentrant previene che utenti malintenzionati chiamino questa funzione e poi rientrino dinuovo dentro prima che la prima chiamata della funzione sia terminata.
     function makeItem(IERC721 _nft, uint _tokenId, uint _price) external nonReentrant{
         require(_price > 0, "Price must be greater than zero");
         itemCount++;
         //transfer nft
-        _nft.transferFrom(msg.sender, address(this), _tokenId);
+        IERC721(_nft).transferFrom(msg.sender, address(this), _tokenId);
         // add new item to items mapping
         items[itemCount] = Item(
             itemCount,
@@ -102,5 +102,9 @@ contract Marketplace is ReentrancyGuard{
     //chiunque voglia comprare un item, ha bisogno di sapere quanti ether deve inviare a purchaseItem() per comprare l'item, includendo prezzo dell'NFT e le fee.
     function getTotalPrice(uint _itemId) view public returns(uint){
         return ((items[_itemId].price*(100 + feePercent))/100);
+    }
+
+    function getItemCount() public view returns(uint){
+        return itemCount;
     }
 }   
