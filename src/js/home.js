@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import {Row, Col, Card, Button} from 'react-bootstrap'
 import Web3 from 'web3';
 //marketplace constract for display the nft and nft contract for retrieve the metadata associated with the nft.
-const Home = ({marketplace, nft}) => {
+const Home = ({marketplace, nft, marketplaceAddr, nftAddr, account}) => {
     const [items,setItems] = useState([])
     const [loading,setLoading] = useState(true)
     const loadMarketplaceItems = async () => {
@@ -35,7 +35,7 @@ const Home = ({marketplace, nft}) => {
     }
     const buyMarketItem = async (item) => {
         //this retun a transaction response, and with .wait() on the transaction response, we wait for the transaction be confermet
-        await (await marketplace.methods.purchaseItem(item.itemId, {value: item.totalPrice}).call()).wait()
+        await marketplace.methods.purchaseItem(item.itemId).send({from:account, value: item.totalPrice})
         //remove the recently purchased itemfrom the marketplace
         loadMarketplaceItems()
     }

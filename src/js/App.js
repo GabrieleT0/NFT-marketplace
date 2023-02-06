@@ -31,7 +31,7 @@ function App(){
     const provider = await web3Modal.connect()
     const web3 = new Web3(provider)
     const networkId = await web3.eth.net.getId()
-    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
+    const accounts = await web3.eth.getAccounts()
     setAccount(accounts[0])
 
     loadContracts(web3,networkId)
@@ -62,7 +62,7 @@ function App(){
             <Routes>
               <Route path="/" element={
                 //here passing the smart contract to the home component
-                <Home marketplace={marketplace} nft={nft} marketplaceAddr={marketplaceAddr} nftAddr={nftAddr} />
+                <Home marketplace={marketplace} nft={nft} marketplaceAddr={marketplaceAddr} nftAddr={nftAddr} account={account} />
               } />
               <Route path="/create" element={
                 <Create marketplace={marketplace} nft={nft} marketplaceAddr={marketplaceAddr} nftAddr={nftAddr} account={account}/>
