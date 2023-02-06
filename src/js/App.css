@@ -36,3 +36,90 @@
       transform: rotate(360deg);
     }
   }
+
+  #title{
+    color: black;
+    font-family: sans-serif;
+    font-weight: bolder;
+    font-size: 1.5rem;
+  }
+
+  #navbar{
+    background-color: #ec9d68 
+    ;
+  }
+
+  #loading{
+    font-size: 1.5rem;
+    font-family: sans-serif;
+    color:black;
+  }
+
+  #walletBtn{
+    color: black;
+    background-color: #dfead3;
+  }
+
+  #walletBtn:hover{
+    background-color: #4fa874;
+  }
+
+  #account{
+    color: black;
+    background-color: #dfead3;
+  }
+
+  #account:hover{
+    background-color: #4fa874;
+  }
+
+  .me-auto{
+    font-weight: 500;
+    font-family: sans-serif;
+    font-size: 1.2rem;
+    margin-left: 80px;
+  }
+
+  #home{
+    color:white;
+    transition-duration: 0.3s;
+  }
+
+  #home:hover{
+    color: #d47e4f;
+    background-color: #dfead3;
+    border-radius: 12%;
+  }
+
+  #create{
+    color:white;
+    transition-duration: 0.3s;
+  }
+
+  #create:hover{
+    color: #d47e4f;
+    background-color: #dfead3;
+    border-radius: 12%;
+  }
+
+  #liItem{
+    color:white;
+    transition-duration: 0.3s;
+  }
+
+  #liItem:hover{
+    color: #d47e4f;
+    background-color: #dfead3;
+    border-radius: 12%;
+  }
+
+  #purch{
+    color:white;
+    transition-duration: 0.3s;
+  }
+
+  #purch:hover{
+    color: #d47e4f;
+    background-color: #dfead3;
+    border-radius: 12%;
+  }
