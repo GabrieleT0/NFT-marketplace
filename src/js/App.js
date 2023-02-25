@@ -7,7 +7,6 @@ import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 import Navigation from './navbar';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Marketplace from '../contractsData/Marketplace.json'
 import NFT from '../contractsData/NFT.json'
 import Home from './Home'
@@ -16,7 +15,7 @@ import MyListedItems from './myListedItem'
 import MyPurchases from './myPurchases'
 import { Spinner } from 'react-bootstrap'
 
-import './App.css';
+import '../css/App.css';
 
 function App(){
   const [loading, setLoading] = useState(true)

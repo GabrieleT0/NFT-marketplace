@@ -2,7 +2,7 @@ import {
     Link
 } from "react-router-dom";
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
-import nftimg from './nftimg.png'
+import nftimg from '../images/nftimg.png'
 
 const Navigation = ({ web3Handler, account }) => {
     return (
@@ -14,9 +14,9 @@ const Navigation = ({ web3Handler, account }) => {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
+                    <Nav className="me-auto" id='li'>
                         <Nav.Link as={Link} to="/" id='home'>Home</Nav.Link>
-                        <Nav.Link as={Link} to="/create" id='create'>Create</Nav.Link>
+                        <Nav.Link as={Link} to="/create" id='create'>Sell</Nav.Link>
                         <Nav.Link as={Link} to="/my-listed-items" id='liItem'>My Listed Items</Nav.Link>
                         <Nav.Link as={Link} to="/my-purchases"id='purch'>My Purchases</Nav.Link>
                     </Nav>
