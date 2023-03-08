@@ -1,4 +1,4 @@
-# D-Art Marketplace of artworks and photographs 
+# D-Art: Marketplace of artworks and photographs 
 DApp created with smart contracts in solidity on Etherum blockchain. Every artworks and photographs is modeled as NFT, by using the OpenZeppelin ERC721 Standard.
 ## Prerequisites for running locally
 - Truffle
