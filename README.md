@@ -5,6 +5,7 @@ DApp created with smart contracts in solidity on Etherum blockchain. Every artwo
 - Ganache
 - Node
 - IPSF
+- Metamask
 ## How to use
 From the project main folder, 
 import OpenZeppelin Contracts:
